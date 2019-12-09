@@ -109,5 +109,7 @@ func (s *Server) DoctorInfo(uid, pwd string) (DoctorInfoResp, error) {
 	if err != nil {
 		return result, err
 	}
+	s.ManaDoctorID = result.Body.Tokens[0].UserID
+	s.ManaUnitID = result.Body.Tokens[0].ManageUnitID
 	return result, nil
 }

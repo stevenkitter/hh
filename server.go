@@ -6,5 +6,7 @@ const CookieStr = "Cookie: 10094418=%u738B%u52C7@photo/10094418.jpg; userId=1009
  *  服务
  */
 type Server struct {
-	Cookie string
+	Cookie       string
+	ManaDoctorID string
+	ManaUnitID   string
 }

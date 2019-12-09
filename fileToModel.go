@@ -70,15 +70,15 @@ func (s *Server) AddUserInfo(user User) {
 		today := fmt.Sprintf("%d-%02d-%02d", time.Now().Year(), time.Now().Month(), time.Now().Day())
 		// 有这个点的时间
 		if strings.Contains(item.CheckDate, today) {
-			resDetail, err := s.RequestHealthCheckDetail(item.HealthCheck)
+			_, err := s.RequestHealthCheckDetail(item.HealthCheck)
 			if err != nil {
 				log.Printf("request err %v", err)
 			}
-			changeRes, err := s.ChangeHealthCheckRequest(resDetail.Body, user)
-			if err != nil {
-				log.Printf("request err %v", err)
-			}
-			log.Printf("resDetail %d", changeRes.Code)
+			//changeRes, err := s.ChangeHealthCheckRequest(resDetail.Body, user)
+			//if err != nil {
+			//	log.Printf("request err %v", err)
+			//}
+			//log.Printf("resDetail %d", changeRes.Code)
 		} else {
 			s.NewData(user, userInfo.Body.EmpiId, userIds.Ids.PhrID)
 		}
@@ -87,25 +87,27 @@ func (s *Server) AddUserInfo(user User) {
 }
 
 func (s *Server) NewData(user User, empiId, phrId string) {
-	detail := HealthCheckDetailBody{
-		IhList: nil,
-		NiList: nil,
-		HhList: make([]MsListItem, 0),
-		HaData: HealthCheckDetailHaData{},
-		MsList: nil,
-		HcData: HealthCheckDetailHcData{
-			EmpiId: empiId,
-			PhrId:  phrId,
-		},
-		ExaData: HealthCheckDetailExaData{},
-		AeData:  HealthCheckDetailAeData{},
-		LsData:  HealthCheckDetailIsData{},
-	}
-	changeRes, err := s.ChangeHealthCheckRequest(detail, user)
-	if err != nil {
-		log.Printf("request err %v", err)
-	}
-	log.Printf("resDetail %d", changeRes.Code)
+	/*
+		detail := HealthCheckDetailBody{
+			IhList: nil,
+			NiList: nil,
+			HhList: make([]MsListItem, 0),
+			HaData: HealthCheckDetailHaData{},
+			MsList: nil,
+			HcData: HealthCheckDetailHcData{
+				EmpiId: empiId,
+				PhrId:  phrId,
+			},
+			ExaData: HealthCheckDetailExaData{},
+			AeData:  HealthCheckDetailAeData{},
+			LsData:  HealthCheckDetailIsData{},
+		}
+	*/
+	//changeRes, err := s.ChangeHealthCheckRequest(detail, user)
+	//if err != nil {
+	//	log.Printf("request err %v", err)
+	//}
+	//log.Printf("resDetail %d", changeRes.Code)
 }
 
 /**

@@ -12,8 +12,12 @@ import (
 )
 
 func (s *Server) AddUserHealthInfo(user ChangeHealthCheckRequestBody) {
+	userNewInfo, err := s.RequestUserNewInfo(user.IdCard)
+	if err != nil || len(userNewInfo.Body) == 0 {
+		log.Printf("request err %v", err)
+	}
 	//获取用户empiId
-	userInfo, err := s.RequestUserInfo(user.IdCard)
+	userInfo, err := s.RequestUserInfo(userNewInfo.Body[0].EmpiID)
 	if err != nil {
 		log.Printf("request err %v", err)
 	}
@@ -25,7 +29,7 @@ func (s *Server) AddUserHealthInfo(user ChangeHealthCheckRequestBody) {
 	}
 
 	// 获取体检记录
-	res, err := s.RequestHealthCheckList(user.IdCard)
+	res, err := s.RequestHealthCheckList(userInfo.Body.EmpiId)
 	if err != nil {
 		log.Printf("request err %v", err)
 		return
@@ -36,32 +40,39 @@ func (s *Server) AddUserHealthInfo(user ChangeHealthCheckRequestBody) {
 		// 新建
 		s.NewHealthData(user, userInfo.Body.EmpiId, userIds.Ids.PhrID)
 	}
-
-	for _, item := range res.Body {
-		// 根据新建时间
-		cd := strings.Split(user.HcData.CheckDate, "T")
-		if len(cd) == 0 {
-			log.Printf("健康日期有误")
-			return
-		}
-		today := cd[0]
-		// 有这个点的时间
-		if strings.Contains(item.CheckDate, today) {
-			resDetail, err := s.RequestHealthCheckDetail(item.HealthCheck)
-			if err != nil {
-				log.Printf("request err %v", err)
-			}
-			changeRes, err := s.ChangeHealthCheckRequest(resDetail.Body, user)
-			if err != nil {
-				log.Printf("request err %v", err)
-			}
-			log.Printf("resDetail %d", changeRes.Code)
-		} else {
-			s.NewHealthData(user, userInfo.Body.EmpiId, userIds.Ids.PhrID)
-		}
+	cd := strings.Split(user.HcData.CheckDate, "T")
+	if len(cd) == 0 {
+		log.Printf("健康日期有误")
+		return
 	}
+	today := cd[0]
+	item, tag := s.HealthCheckItemContain(res.Body, today)
+	if tag {
+		resDetail, err := s.RequestHealthCheckDetail(item.HealthCheck)
+		if err != nil {
+			log.Printf("request err %v", err)
+		}
+		changeRes, err := s.ChangeHealthCheckRequest(resDetail.Body, user)
+		if err != nil {
+			log.Printf("request err %v", err)
+		}
+		log.Printf("resDetail %d", changeRes.Code)
+	} else {
+		s.NewHealthData(user, userInfo.Body.EmpiId, userIds.Ids.PhrID)
+	}
+
 	log.Printf("request ok %v", res)
 }
+
+func (s *Server) HealthCheckItemContain(list []HealthCheckItem, date string) (HealthCheckItem, bool) {
+	for _, item := range list {
+		if strings.Contains(item.CheckDate, date) {
+			return item, true
+		}
+	}
+	return HealthCheckItem{}, false
+}
+
 func (s *Server) NewHealthData(user ChangeHealthCheckRequestBody, empiId, phrId string) {
 	detail := HealthCheckDetailBody{
 		IhList: nil,
@@ -87,7 +98,7 @@ func (s *Server) NewHealthData(user ChangeHealthCheckRequestBody, empiId, phrId 
 func (s *Server) HealthExcelToCUsers() ([]ChangeHealthCheckRequestBody, error) {
 	var users []ChangeHealthCheckRequestBody
 	err := filepath.Walk("./", func(path string, info os.FileInfo, err error) error {
-		if strings.Contains(path, "个人基本信息表.xlsx") {
+		if strings.Contains(path, "健康检查表.xlsx") {
 			users, err = s.HealthExcelPathToData(path)
 			if err != nil {
 				return err
@@ -146,7 +157,7 @@ func (s *Server) HealthExcelPathToData(path string) ([]ChangeHealthCheckRequestB
 
 		user.HcData.CheckDate = fmt.Sprintf("%d-%02d-%02dT00:00:00", t.Year(), t.Month(), t.Day())
 		user.HcData.CheckWay = row.Cells[3].String() // 体检类型
-		user.HcData.Symptom = row.Cells[4].String()
+		user.HcData.Symptom = "0" + row.Cells[4].String()
 		user.HcData.Temperature = row.Cells[5].String()
 		user.HcData.Breathe = row.Cells[7].String()
 		user.HcData.Pulse = row.Cells[6].String()
@@ -309,7 +320,7 @@ func (s *Server) HealthExcelPathToData(path string) ([]ChangeHealthCheckRequestB
 		user.HaData.Abnormality = row.Cells[112].String()
 		user.HaData.Mana = row.Cells[113].String()
 		user.HaData.RiskfactorsControl = row.Cells[114].String()
-
+		user.HaData.TargetWeight = row.Cells[115].String()
 		users = append(users, user)
 	}
 	return users, nil

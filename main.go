@@ -25,11 +25,17 @@ func main() {
 	}
 	log.Printf("登陆成功, %d", res.Code)
 
-	//
+	//导入人员信息
+	// s.ImpUserData()
+
+	//导入健康体检
+	s.ImpHealth()
+
 }
 
+//  导入人员信息
 func (s *Server) ImpUserData() {
-	//  导入人员信息
+
 	users, err := s.ExcelToCUsers()
 	if err != nil {
 		log.Fatalf("Excel数据读取错误 %v", err)
@@ -69,6 +75,7 @@ func (s *Server) ImpUserData() {
 	}
 }
 
+// 导入健康信息
 func (s *Server) ImpHealth() {
 	users, err := s.HealthExcelToCUsers()
 	if err != nil {

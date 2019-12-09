@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -19,8 +18,7 @@ type HealthCheckRequest struct {
 	ServiceAction string
 }
 
-func NewHealthCheckRequest(idCard string) HealthCheckRequest {
-	pkey := fmt.Sprintf("%s00000000000000", idCard)
+func NewHealthCheckRequest(pkey string) HealthCheckRequest {
 
 	return HealthCheckRequest{
 		Actions:       "update",

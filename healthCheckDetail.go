@@ -81,7 +81,7 @@ type HealthCheckDetailHaData struct {
 	LastModifyUnit     Insurance `json:"lastModifyUnit"`
 	LastModifyUser     Insurance `json:"lastModifyUser"`
 	Mana               Insurance `json:"mana"`
-	TargetWeight       string    `json:"targetWeight"`
+	TargetWeight       float32   `json:"targetWeight"`
 	HealthCheck        string    `json:"healthCheck"`
 	Vaccine            string    `json:"vaccine"`
 	Abnormality1       string    `json:"abnormality1"`
@@ -138,7 +138,7 @@ type HealthCheckDetailHcData struct {
 	EyeDiseases                  Insurance `json:"eyeDiseases"`
 	HealthCheck                  string    `json:"healthCheck"`
 	Pulse                        int       `json:"pulse"`
-	Diastolic_L                  string    `json:"diastolic_L"`
+	Diastolic_L                  float32   `json:"diastolic_L"`
 	Waistline                    float32   `json:"waistline"`
 	OthercerebrovascularDiseases string    `json:"othercerebrovascularDiseases"`
 	SymptomOt                    string    `json:"symptomOt"`
@@ -149,7 +149,7 @@ type HealthCheckDetailHcData struct {
 	MedicineFlag                 Insurance `json:"medicineFlag"`
 	OtherkidneyDiseases          string    `json:"otherkidneyDiseases"`
 	InfamilybedFlag              Insurance `json:"infamilybedFlag"`
-	Constriction_L               string    `json:"constriction_L"`
+	Constriction_L               float32   `json:"constriction_L"`
 }
 type HealthCheckDetailExaData struct {
 	LymphnodesDesc    string    `json:"lymphnodesDesc"`
@@ -278,7 +278,7 @@ type HealthCheckDetailIsData struct {
 	LastModifyUser            Insurance `json:"lastModifyUser"`
 	RayPro                    string    `json:"rayPro"`
 	HealthCheck               string    `json:"healthCheck"`
-	Insistexercisetime        string    `json:"insistexercisetime"`
+	Insistexercisetime        int64     `json:"insistexercisetime"`
 	OtherPro                  string    `json:"otherPro"`
 	Chemicals                 string    `json:"chemicals"`
 	StopDrinkingTime          string    `json:"stopDrinkingTime"`
@@ -309,7 +309,7 @@ type HealthCheckDetailIsData struct {
 	LastModifyDate            string    `json:"last_ModifyDate"`
 	DustPro                   string    `json:"dustPro"`
 	Smokes                    string    `json:"smokes"`
-	EveryPhysicalExerciseTime string    `json:"everyPhysicalExerciseTime"`
+	EveryPhysicalExerciseTime int64     `json:"everyPhysicalExerciseTime"`
 }
 
 func (s *Server) RequestHealthCheckDetail(healthCheck string) (HealthCheckDetailResp, error) {

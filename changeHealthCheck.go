@@ -9,7 +9,6 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
-	"time"
 )
 
 type ChangeHealthCheckRequest struct {
@@ -54,11 +53,17 @@ type NiListData struct {
 	InoculationUnit string `json:"inoculationUnit"`
 }
 
-func NewChangeHealthCheckRequest(body HealthCheckDetailBody, user ChangeHealthCheckRequestBody) ChangeHealthCheckRequest {
+func (s *Server) NewChangeHealthCheckRequest(body HealthCheckDetailBody, user ChangeHealthCheckRequestBody) ChangeHealthCheckRequest {
 	op := "update"
 	if body.HcData.HealthCheck == "" {
 		op = "create"
 	}
+	hc := s.NewHcRequestData(body.HcData, user)
+	ls := NewLsRequestData(body.LsData, user)
+	exa := NewExaRequestData(body.ExaData, user)
+	ae := NewAeRequestData(body.AeData, user)
+	ha := NewHaRequestData(body.HaData, user)
+	exa.HealthCheck = hc.HealthCheck
 	return ChangeHealthCheckRequest{
 		RequestJson: RequestJson{
 			Method:        "execute",
@@ -68,11 +73,11 @@ func NewChangeHealthCheckRequest(body HealthCheckDetailBody, user ChangeHealthCh
 		},
 		Op: op,
 		Body: ChangeHealthCheckRequestBody{
-			HcData:  NewHcRequestData(body.HcData, user),
-			LsData:  NewLsRequestData(body.LsData, user),
-			ExaData: NewExaRequestData(body.ExaData),
-			AeData:  NewAeRequestData(body.AeData, user),
-			HaData:  NewHaRequestData(body.HaData),
+			HcData:  hc,
+			LsData:  ls,
+			ExaData: exa,
+			AeData:  ae,
+			HaData:  ha,
 			InhospitalListData: []InhospitalListData{NewInhospitalListRequestData(1),
 				NewInhospitalListRequestData(1),
 				NewInhospitalListRequestData(2),
@@ -339,7 +344,7 @@ func Bmi(height, weight string) string {
 	r := w * 100 * 100 / (h * h)
 	return fmt.Sprintf("%0.2f", r)
 }
-func NewHcRequestData(data HealthCheckDetailHcData, user ChangeHealthCheckRequestBody) HcRequestData {
+func (s *Server) NewHcRequestData(data HealthCheckDetailHcData, user ChangeHealthCheckRequestBody) HcRequestData {
 	hc := HcRequestData{}
 	t := reflect.TypeOf(hc)
 	p := reflect.ValueOf(&hc).Elem()
@@ -351,12 +356,14 @@ func NewHcRequestData(data HealthCheckDetailHcData, user ChangeHealthCheckReques
 
 	for k := 0; k < t.NumField(); k++ {
 		fName := t.Field(k).Name
-		dataV := GetStringValueFromStructByName(user, fName)
+		dataV := GetStringValueFromStructByName(user.HcData, fName)
 		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
 	}
-
-	hc.ManaDoctorID = "10094418"
-	hc.ManaUnitID = "320111001005"
+	hc.HealthCheck = data.HealthCheck
+	hc.ManaDoctorID = s.ManaDoctorID //"10094418"
+	hc.ManaUnitID = s.ManaUnitID     // "320111001005"
+	hc.EmpiID = data.EmpiId
+	hc.PhrID = data.PhrId
 	return hc
 }
 func NewLsRequestData(data HealthCheckDetailIsData, user ChangeHealthCheckRequestBody) LsRequestData {
@@ -371,13 +378,14 @@ func NewLsRequestData(data HealthCheckDetailIsData, user ChangeHealthCheckReques
 
 	for k := 0; k < t.NumField(); k++ {
 		fName := t.Field(k).Name
-		dataV := GetStringValueFromStructByName(user, fName)
+		dataV := GetStringValueFromStructByName(user.LsData, fName)
 		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
 	}
+	hc.HealthCheck = data.HealthCheck
 
 	return hc
 }
-func NewExaRequestData(data HealthCheckDetailExaData) ExaRequestData {
+func NewExaRequestData(data HealthCheckDetailExaData, user ChangeHealthCheckRequestBody) ExaRequestData {
 	hc := ExaRequestData{}
 	t := reflect.TypeOf(hc)
 	p := reflect.ValueOf(&hc).Elem()
@@ -386,10 +394,12 @@ func NewExaRequestData(data HealthCheckDetailExaData) ExaRequestData {
 		dataV := GetStringValueFromStructByName(data, fName)
 		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
 	}
-	d := fmt.Sprintf("%d-%02d-%02d 00:00:00", time.Now().Year(), time.Now().Month(), time.Now().Day())
-	hc.CreateDate = d
-	hc.LastModifyDate = d
-	hc.HeartRate = ""
+	for k := 0; k < t.NumField(); k++ {
+		fName := t.Field(k).Name
+		dataV := GetStringValueFromStructByName(user.ExaData, fName)
+		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
+	}
+	hc.HealthCheck = data.HealthCheck
 	return hc
 }
 func NewAeRequestData(data HealthCheckDetailAeData, user ChangeHealthCheckRequestBody) AeRequestData {
@@ -404,12 +414,13 @@ func NewAeRequestData(data HealthCheckDetailAeData, user ChangeHealthCheckReques
 
 	for k := 0; k < t.NumField(); k++ {
 		fName := t.Field(k).Name
-		dataV := GetStringValueFromStructByName(user, fName)
+		dataV := GetStringValueFromStructByName(user.AeData, fName)
 		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
 	}
+	hc.HealthCheck = data.HealthCheck
 	return hc
 }
-func NewHaRequestData(data HealthCheckDetailHaData) HaRequestData {
+func NewHaRequestData(data HealthCheckDetailHaData, user ChangeHealthCheckRequestBody) HaRequestData {
 	hc := HaRequestData{}
 	t := reflect.TypeOf(hc)
 	p := reflect.ValueOf(&hc).Elem()
@@ -418,10 +429,12 @@ func NewHaRequestData(data HealthCheckDetailHaData) HaRequestData {
 		dataV := GetStringValueFromStructByName(data, fName)
 		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
 	}
-	hc.Abnormality = "1"
-	d := fmt.Sprintf("%d-%02d-%02d 00:00:00", time.Now().Year(), time.Now().Month(), time.Now().Day())
-	hc.CreateDate = d
-	hc.LastModifyDate = d
+	for k := 0; k < t.NumField(); k++ {
+		fName := t.Field(k).Name
+		dataV := GetStringValueFromStructByName(user.HaData, fName)
+		p.FieldByName(fName).Set(reflect.ValueOf(dataV))
+	}
+	hc.HealthCheck = data.HealthCheck
 	return hc
 }
 
@@ -494,7 +507,7 @@ type ChangeHealthCheckRespBody struct {
 func (s *Server) ChangeHealthCheckRequest(body HealthCheckDetailBody, user ChangeHealthCheckRequestBody) (ChangeHealthCheckResp, error) {
 	url := "http://32.33.1.123:8082/pkehr/*.jsonRequest"
 	cli := http.Client{}
-	reqData := NewChangeHealthCheckRequest(body, user)
+	reqData := s.NewChangeHealthCheckRequest(body, user)
 	bit, _ := json.Marshal(&reqData)
 	request, _ := http.NewRequest("POST", url, bytes.NewReader(bit))
 	request.Header.Add("Content-Type", "application/json")
