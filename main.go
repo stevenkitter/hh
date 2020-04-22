@@ -5,7 +5,7 @@ import "log"
 func main() {
 	// 系统有个接口会校验是否需要加密，目前是无需要加密
 	s := Server{}
-	userId := "01144817"
+	userId := "09283221"
 	pwd := "1"
 	logResp, err := s.DoctorInfo(userId, pwd)
 	if err != nil {
@@ -25,12 +25,44 @@ func main() {
 	}
 	log.Printf("登陆成功, %d", res.Code)
 
-	//导入人员信息
-	// s.ImpUserData()
-
+	//   //导入人员信息
+	//	s.ImpUserData()
 	//导入健康体检
-	s.ImpHealth()
+	//s.ImpHealth()
+	s.ExportUserInfoToGongWei()
+}
 
+// ExportUserInfoToGongWei 导出到共卫系统
+func (s *Server) ExportUserInfoToGongWei() error {
+	var start = 0
+	list, err := s.GongweiUserInfo("320111001010%", start)
+	if err != nil {
+		return err
+	}
+	for _, i := range list.Body {
+		log.Printf(i.PersonName)
+		err := s.PullUserToUS(i.EmpiID, i.RegionCode)
+
+		if err != nil {
+			return err
+		}
+	}
+	for len(list.Body) > 0 {
+		start++
+		list, err = s.GongweiUserInfo("320111001010%", start)
+		if err != nil {
+			return err
+		}
+		for _, i := range list.Body {
+			log.Printf(i.PersonName)
+			err := s.PullUserToUS(i.EmpiID, i.RegionCode)
+
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 //  导入人员信息

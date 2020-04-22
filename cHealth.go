@@ -39,6 +39,7 @@ func (s *Server) AddUserHealthInfo(user ChangeHealthCheckRequestBody) {
 	if len(res.Body) == 0 {
 		// 新建
 		s.NewHealthData(user, userInfo.Body.EmpiId, userIds.Ids.PhrID)
+		return
 	}
 	cd := strings.Split(user.HcData.CheckDate, "T")
 	if len(cd) == 0 {
@@ -98,7 +99,7 @@ func (s *Server) NewHealthData(user ChangeHealthCheckRequestBody, empiId, phrId 
 func (s *Server) HealthExcelToCUsers() ([]ChangeHealthCheckRequestBody, error) {
 	var users []ChangeHealthCheckRequestBody
 	err := filepath.Walk("./", func(path string, info os.FileInfo, err error) error {
-		if strings.Contains(path, "健康检查表.xlsx") {
+		if strings.Contains(path, "健康检查表-导入模板.xlsx") {
 			users, err = s.HealthExcelPathToData(path)
 			if err != nil {
 				return err
@@ -213,114 +214,209 @@ func (s *Server) HealthExcelPathToData(path string) ([]ChangeHealthCheckRequestB
 		// aeData
 		user.AeData.Lip = row.Cells[35].String()
 		user.AeData.Denture = row.Cells[36].String()
-		user.AeData.LeftUp = ""
-		user.AeData.LeftDown = ""
-		user.AeData.RightUp = ""
-		user.AeData.RightDown = ""
-		user.AeData.Pharyngeal = row.Cells[37].String()
-		user.AeData.LeftEye = row.Cells[38].String()
-		user.AeData.RightEye = row.Cells[39].String()
-		user.AeData.RecLeftEye = row.Cells[40].String()
-		user.AeData.RecRightEye = row.Cells[41].String()
-		user.AeData.Hearing = row.Cells[42].String()
-		user.AeData.Motion = row.Cells[43].String()
+		user.AeData.LeftUp = row.Cells[37].String()
+		user.AeData.LeftDown = row.Cells[38].String()
+		user.AeData.RightUp = row.Cells[39].String()
+		user.AeData.RightDown = row.Cells[40].String()
+
+		// 老37
+		number := 41
+		user.AeData.Pharyngeal = row.Cells[number].String()
+		number += 1
+		user.AeData.LeftEye = row.Cells[number].String()
+		number += 1
+		user.AeData.RightEye = row.Cells[number].String()
+		number += 1
+		user.AeData.RecLeftEye = row.Cells[number].String()
+		number += 1
+		user.AeData.RecRightEye = row.Cells[number].String()
+		number += 1
+		user.AeData.Hearing = row.Cells[number].String()
+		number += 1
+		user.AeData.Motion = row.Cells[number].String()
 
 		//exaData
-		user.ExaData.Fundus = row.Cells[44].String()
-		user.ExaData.Skin = row.Cells[45].String()
-		user.ExaData.Sclera = row.Cells[46].String()
-		user.ExaData.Lymphnodes = row.Cells[47].String()
-		user.ExaData.BarrelChest = row.Cells[48].String()
-		user.ExaData.BreathSound = row.Cells[49].String()
-		user.ExaData.Rales = row.Cells[50].String()
-		user.ExaData.HeartRate = row.Cells[51].String()
-		user.ExaData.Rhythm = row.Cells[52].String()
-		user.ExaData.HeartMurmur = row.Cells[53].String()
-		user.ExaData.AbdominAltend = row.Cells[54].String()
-		user.ExaData.AdbominAlmass = row.Cells[55].String()
-		user.ExaData.LiverBig = row.Cells[56].String()
-		user.ExaData.Splenomegaly = row.Cells[57].String()
-		user.ExaData.Dullness = row.Cells[58].String()
-		user.ExaData.Edema = row.Cells[59].String()
-		user.ExaData.FootPulse = row.Cells[60].String()
-		user.ExaData.Dre = row.Cells[61].String()
-		user.ExaData.Breast = row.Cells[62].String()
-		user.ExaData.Vulva = row.Cells[63].String()
-		user.ExaData.Vaginal = row.Cells[64].String()
-		user.ExaData.Cervix = row.Cells[65].String()
-		user.ExaData.Palace = row.Cells[66].String()
-		user.ExaData.Attachment = row.Cells[67].String()
-		user.ExaData.Tjother = row.Cells[68].String()
+		number += 1
+		user.ExaData.Fundus = row.Cells[number].String()
+		number += 1
+		user.ExaData.Skin = row.Cells[number].String()
+		number += 1
+		user.ExaData.Sclera = row.Cells[number].String()
+		number += 1
+		user.ExaData.Lymphnodes = row.Cells[number].String()
+		number += 1
+		user.ExaData.BarrelChest = row.Cells[number].String()
+		number += 1
+		user.ExaData.BreathSound = row.Cells[number].String()
+		number += 1
+		user.ExaData.Rales = row.Cells[number].String()
+		number += 1
+		user.ExaData.HeartRate = row.Cells[number].String()
+		number += 1
+		user.ExaData.Rhythm = row.Cells[number].String()
+		number += 1
+		user.ExaData.HeartMurmur = row.Cells[number].String()
+		number += 1
+		user.ExaData.AbdominAltend = row.Cells[number].String()
+		number += 1
+		user.ExaData.AdbominAlmass = row.Cells[number].String()
+		number += 1
+		user.ExaData.LiverBig = row.Cells[number].String()
+		number += 1
+		user.ExaData.Splenomegaly = row.Cells[number].String()
+		number += 1
+		user.ExaData.Dullness = row.Cells[number].String()
+		number += 1
+		user.ExaData.Edema = row.Cells[number].String()
+		number += 1
+		user.ExaData.FootPulse = row.Cells[number].String()
+		number += 1
+		user.ExaData.Dre = row.Cells[number].String()
+		number += 1
+		user.ExaData.Breast = row.Cells[number].String()
+		number += 1
+		user.ExaData.Vulva = row.Cells[number].String()
+		number += 1
+		user.ExaData.Vaginal = row.Cells[number].String()
+		number += 1
+		user.ExaData.Cervix = row.Cells[number].String()
+		number += 1
+		user.ExaData.Palace = row.Cells[number].String()
+		number += 1
+		user.ExaData.Attachment = row.Cells[number].String()
+		number += 1
+		user.ExaData.Tjother = row.Cells[number].String()
 
 		//aeData
-		user.AeData.Hgb = row.Cells[69].String()
-		user.AeData.Wbc = row.Cells[70].String()
-		user.AeData.Platelet = row.Cells[71].String()
-		user.AeData.BloodOther = row.Cells[72].String()
-		user.AeData.Proteinuria = row.Cells[73].String()
-		user.AeData.Glu = row.Cells[74].String()
-		user.AeData.Dka = row.Cells[75].String()
-		user.AeData.Oc = row.Cells[76].String()
-		user.AeData.UrineOther = row.Cells[77].String()
-		user.AeData.Fbs = row.Cells[78].String()
+		number += 1
+		user.AeData.Hgb = row.Cells[number].String()
+		number += 1
+		user.AeData.Wbc = row.Cells[number].String()
+		number += 1
+		user.AeData.Platelet = row.Cells[number].String()
+		number += 1
+		user.AeData.BloodOther = row.Cells[number].String()
+		number += 1
+		user.AeData.Proteinuria = row.Cells[number].String()
+		number += 1
+		user.AeData.Glu = row.Cells[number].String()
+		number += 1
+		user.AeData.Dka = row.Cells[number].String()
+		number += 1
+		user.AeData.Oc = row.Cells[number].String()
+		number += 1
+		user.AeData.UrineOther = row.Cells[number].String()
+		number += 1
+		user.AeData.Fbs = row.Cells[number].String() //78
 		user.AeData.Fbs2 = ""
-		user.AeData.Ecg = row.Cells[79].String()
-		user.AeData.Malb = row.Cells[80].String()
-		user.AeData.Fob = row.Cells[81].String()
-		user.AeData.Hba1C = row.Cells[82].String()
-		user.AeData.Hbsag = row.Cells[83].String()
-		user.AeData.Alt = row.Cells[84].String()
-		user.AeData.Ast = row.Cells[85].String()
-		user.AeData.Alb = row.Cells[86].String()
-		user.AeData.Tbil = row.Cells[87].String()
-		user.AeData.Dbil = row.Cells[88].String()
-		user.AeData.Cr = row.Cells[89].String()
-		user.AeData.Bun = row.Cells[90].String()
-		user.AeData.Kalemia = row.Cells[91].String()
-		user.AeData.Natremia = row.Cells[92].String()
-		user.AeData.Tc = row.Cells[93].String()
-		user.AeData.Tg = row.Cells[94].String()
-		user.AeData.Ldl = row.Cells[95].String()
-		user.AeData.Hdl = row.Cells[96].String()
-		user.AeData.X = row.Cells[97].String()
-		user.AeData.B = row.Cells[98].String()
-		user.AeData.Ps = row.Cells[99].String()
-		user.AeData.FuOther = row.Cells[100].String()
+		number += 1
+		user.AeData.Ecg = row.Cells[number].String()
+		number += 1
+		user.AeData.Malb = row.Cells[number].String()
+		number += 1
+		user.AeData.Fob = row.Cells[number].String()
+		number += 1
+		user.AeData.Hba1C = row.Cells[number].String()
+		number += 1
+		user.AeData.Hbsag = row.Cells[number].String()
+		number += 1
+		user.AeData.Alt = row.Cells[number].String()
+		number += 1
+		user.AeData.Ast = row.Cells[number].String()
+		number += 1
+		user.AeData.Alb = row.Cells[number].String()
+		number += 1
+		user.AeData.Tbil = row.Cells[number].String()
+		number += 1
+		user.AeData.Dbil = row.Cells[number].String()
+		number += 1
+		user.AeData.Cr = row.Cells[number].String()
+		number += 1
+		user.AeData.Bun = row.Cells[number].String()
+		number += 1
+		user.AeData.Kalemia = row.Cells[number].String()
+		number += 1
+		user.AeData.Natremia = row.Cells[number].String()
+		number += 1
+		user.AeData.Tc = row.Cells[number].String()
+		number += 1
+		user.AeData.Tg = row.Cells[number].String()
+		number += 1
+		user.AeData.Ldl = row.Cells[number].String()
+		number += 1
+		user.AeData.Hdl = row.Cells[number].String()
+		number += 1
+		user.AeData.X = row.Cells[number].String()
+		number += 1
+		user.AeData.B = row.Cells[number].String()
+		number += 1
+		user.AeData.Ps = row.Cells[number].String()
+		number += 1
+		user.AeData.FuOther = row.Cells[number].String()
 
 		// hcData
-		user.HcData.CerebrovascularDiseases = row.Cells[101].String()
-		user.HcData.HeartDisease = row.Cells[102].String()
-		user.HcData.KidneyDiseases = row.Cells[103].String()
-		user.HcData.VascularDisease = row.Cells[104].String()
-		user.HcData.EyeDiseases = row.Cells[105].String()
-		user.HcData.NeurologicalDiseases = row.Cells[106].String()
-		user.HcData.OtherDiseasesone = row.Cells[107].String()
-		if row.Cells[108].String() == "2" {
+		number += 1
+		user.HcData.CerebrovascularDiseases = row.Cells[number].String()
+		number += 1
+		user.HcData.HeartDisease = row.Cells[number].String()
+		number += 1
+		user.HcData.KidneyDiseases = row.Cells[number].String()
+		number += 1
+		user.HcData.VascularDisease = row.Cells[number].String()
+		number += 1
+		user.HcData.EyeDiseases = row.Cells[number].String()
+		number += 1
+		user.HcData.NeurologicalDiseases = row.Cells[number].String()
+		number += 1
+		user.HcData.OtherDiseasesone = row.Cells[number].String() // 111
+		number += 1
+		if row.Cells[number].String() == "2" {
 			user.HcData.InhospitalFlag = "n"
 		} else {
 			user.HcData.InhospitalFlag = "y"
 		}
-		if row.Cells[109].String() == "2" {
+		number += 1
+		if row.Cells[number].String() == "2" {
 			user.HcData.InfamilybedFlag = "n"
 		} else {
 			user.HcData.InfamilybedFlag = "y"
 		}
-		if row.Cells[110].String() == "2" {
+		number += 1
+		if row.Cells[number].String() == "2" {
 			user.HcData.MedicineFlag = "n"
 		} else {
 			user.HcData.MedicineFlag = "y"
 		}
-		if row.Cells[111].String() == "2" {
+		number += 1
+		if row.Cells[number].String() == "2" {
 			user.HcData.NonimmuneFlag = "n"
 		} else {
 			user.HcData.NonimmuneFlag = "y"
 		}
 
 		// HaData
-		user.HaData.Abnormality = row.Cells[112].String()
-		user.HaData.Mana = row.Cells[113].String()
-		user.HaData.RiskfactorsControl = row.Cells[114].String()
-		user.HaData.TargetWeight = row.Cells[115].String()
+		number += 1
+		user.HaData.Abnormality = row.Cells[number].String() // 116
+		number += 1
+		user.HaData.Abnormality1 = row.Cells[number].String() // 117
+		number += 1
+		user.HaData.Abnormality2 = row.Cells[number].String() // 118
+		number += 1
+		user.HaData.Abnormality3 = row.Cells[number].String() // 119
+		number += 1
+		user.HaData.Abnormality4 = row.Cells[number].String() // 119
+		number += 1
+
+		user.HaData.Mana = row.Cells[number].String()
+		number += 1
+		user.HaData.RiskfactorsControl = row.Cells[number].String()
+		number += 1
+		user.HaData.TargetWeight = row.Cells[number].String()
+		number += 1
+		user.HaData.Vaccine = row.Cells[number].String()
+		number += 1
+		user.HaData.PjOther = row.Cells[number].String()
+
 		users = append(users, user)
 	}
 	return users, nil

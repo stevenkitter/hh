@@ -11,7 +11,7 @@ import (
 func (s *Server) ExcelToCUsers() ([]ChangeUserInfoRequestBody, error) {
 	var users []ChangeUserInfoRequestBody
 	err := filepath.Walk("./", func(path string, info os.FileInfo, err error) error {
-		if strings.Contains(path, "个人基本信息表.xlsx") {
+		if strings.Contains(path, "个人基本信息表-导入模板.xlsx") {
 			users, err = s.ExcelPathToData(path)
 			if err != nil {
 				return err
@@ -64,7 +64,8 @@ func (s *Server) ExcelPathToData(path string) ([]ChangeUserInfoRequestBody, erro
 		}
 		user.IncomeSource = row.Cells[11].String()
 		user.RegisteredPermanent = row.Cells[12].String()
-		user.NationCode = "01"
+		user.NationCode = NationCodeOfString(row.Cells[13].String()) //"01"
+
 		user.BloodTypeCode = row.Cells[14].String()
 		user.RhBloodCode = row.Cells[15].String()
 		if row.Cells[16].String() == "2" {
@@ -113,7 +114,8 @@ func (s *Server) ExcelPathToData(path string) ([]ChangeUserInfoRequestBody, erro
 		} else {
 			user.FamilyDoctorSigned = "y" //扶贫对象
 		}
-		user.RegionCode = "3201110010100010001"
+		user.RegionCode = "320111001011003" //"3201110010100010001"
+
 		user.ManaUnitID = "320111001"
 		user.ManaDoctorID = "01144817"
 		if row.Cells[43].String() == "2" {
@@ -125,4 +127,124 @@ func (s *Server) ExcelPathToData(path string) ([]ChangeUserInfoRequestBody, erro
 		users = append(users, user)
 	}
 	return users, nil
+}
+
+func NationCodeOfString(name string) string {
+	switch name {
+	case "汉族":
+		return "01"
+	case "蒙古族":
+		return "02"
+	case "回族":
+		return "03"
+	case "藏族":
+		return "04"
+	case "维吾尔族":
+		return "05"
+	case "苗族":
+		return "06"
+	case "彝族":
+		return "07"
+	case "壮族":
+		return "08"
+	case "布依族":
+		return "09"
+	case "朝鲜族":
+		return "10"
+	case "满族":
+		return "11"
+	case "侗族":
+		return "12"
+	case "瑶族":
+		return "13"
+	case "白族":
+		return "14"
+	case "土家族":
+		return "15"
+	case "哈尼族":
+		return "16"
+	case "哈萨克族":
+		return "17"
+	case "傣族":
+		return "18"
+	case "黎族":
+		return "19"
+	case "傈僳族":
+		return "20"
+	case "佤族":
+		return "21"
+	case "畲族":
+		return "22"
+	case "高山族":
+		return "23"
+	case "拉祜族":
+		return "24"
+	case "水族":
+		return "25"
+	case "东乡族":
+		return "26"
+	case "纳西族":
+		return "27"
+	case "景颇族":
+		return "28"
+	case "柯尔克孜族":
+		return "29"
+	case "土族":
+		return "30"
+	case "达斡尔族":
+		return "31"
+	case "仫佬族":
+		return "32"
+	case "羌族":
+		return "33"
+	case "布朗族":
+		return "34"
+	case "撒拉族":
+		return "35"
+	case "毛南族":
+		return "36"
+	case "仡佬族":
+		return "37"
+	case "锡伯族":
+		return "38"
+	case "阿昌族":
+		return "39"
+	case "普米族":
+		return "40"
+	case "塔吉克族":
+		return "41"
+	case "怒族":
+		return "42"
+	case "乌孜别克族":
+		return "43"
+	case "俄罗斯族":
+		return "44"
+	case "鄂温克族":
+		return "45"
+	case "德昂族":
+		return "46"
+	case "保安族":
+		return "47"
+	case "裕固族":
+		return "48"
+	case "京族":
+		return "49"
+	case "塔塔尔族":
+		return "50"
+	case "独龙族":
+		return "51"
+	case "鄂伦春族":
+		return "52"
+	case "赫哲族":
+		return "53"
+	case "门巴族":
+		return "54"
+	case "珞巴族":
+		return "55"
+	case "基诺族":
+		return "56"
+	case "其他":
+		return "57"
+	}
+	return "01"
 }
