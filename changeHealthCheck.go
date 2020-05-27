@@ -508,6 +508,7 @@ func (s *Server) ChangeHealthCheckRequest(body HealthCheckDetailBody, user Chang
 	url := "http://32.33.1.123:8082/pkehr/*.jsonRequest"
 	cli := http.Client{}
 	reqData := s.NewChangeHealthCheckRequest(body, user)
+
 	bit, _ := json.Marshal(&reqData)
 	request, _ := http.NewRequest("POST", url, bytes.NewReader(bit))
 	request.Header.Add("Content-Type", "application/json")

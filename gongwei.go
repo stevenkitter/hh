@@ -114,6 +114,23 @@ type UserInfoDetail struct {
 			Text string `json:"text"`
 			Key  string `json:"key"`
 		} `json:"educationCode"`
+		ConfirmdateTnb      string `json:"confirmdate_tnb"`
+		ConfirmdateGxy      string `json:"confirmdate_gxy"`
+		ConfirmdateGxb      string `json:"confirmdate_gxb"`
+		ConfirmdateMxzsxfjb string `json:"confirmdate_mxzsxfjb"`
+		ConfirmdateExzl     string `json:"confirmdate_exzl"`
+		ConfirmdateNzz      string `json:"confirmdate_nzz"`
+		ConfirmdateZxjsjb   string `json:"confirmdate_zxjsjb"`
+		ConfirmdateJhb      string `json:"confirmdate_jhb"`
+		ConfirmdateGzjb     string `json:"confirmdate_gzjb"`
+		ConfirmdateXtjx     string `json:"confirmdate_xtjx"`
+		ConfirmdatePx       string `json:"confirmdate_px"`
+		ConfirmdateSzjb     string `json:"confirmdate_szjb"`
+		ConfirmdateZyb      string `json:"confirmdate_zyb"`
+		ConfirmdateQtfdcrb  string `json:"confirmdate_qtfdcrb"`
+		DiseasetextZyb      string `json:"diseasetext_zyb"`
+		DiseasetextQtfdcrb  string `json:"diseasetext_qtfdcrb"`
+
 		Email              interface{} `json:"email"`
 		CreateUnit         string      `json:"createUnit"`
 		PhrID              string      `json:"phrId"`
@@ -139,6 +156,11 @@ type UserInfoDetail struct {
 		DiseasetextRedioFq string      `json:"diseasetext_redio_fq"`
 		CreateTime         string      `json:"createTime"`
 		Birthday           string      `json:"birthday"`
+		QtFq1              string      `json:"qt_fq1"`
+		QtMq1              string      `json:"qt_mq1"`
+		QtXdjm1            string      `json:"qt_xdjm1"`
+		cjqkQtcj1          string      `json:"cjqk_qtcj1"`
+		QtZn1              string      `json:"qt_zn1"`
 		DiseasetextSs0     string      `json:"diseasetext_ss0"`
 		ManaUnitID         struct {
 			Text string `json:"text"`
@@ -186,6 +208,7 @@ type UserInfoDetail struct {
 			Text string `json:"text"`
 			Key  string `json:"key"`
 		} `json:"knowFlag"`
+
 		InsuranceText      interface{} `json:"insuranceText"`
 		StartdateSx0       interface{} `json:"startdate_sx0"`
 		DiseasetextCheckJb struct {
