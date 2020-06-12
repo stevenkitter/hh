@@ -48,19 +48,19 @@ func main() {
 	// 导入人员信息
 	// s.ImpUserData()
 	//导入健康体检
-	// s.ImpHealth()
+	//s.ImpHealth()
 	// 江浦数据进公卫系统
-	// s.ExportUserInfoToGongWei()
+	s.ExportUserInfoToGongWei()
 	// 公卫健康体检进江浦系统
-	err = s.impOldToTmp("2020-04-26")
-	if err != nil {
-		log.Printf("导入错误 %v", err)
-	}
+	//err = s.impOldToTmp("2020-05-29")
+	//if err != nil {
+	//	log.Printf("导入错误 %v", err)
+	//}
 }
 
 // ExportUserInfoToGongWei 导出到共卫系统
 func (s *Server) ExportUserInfoToGongWei() error {
-	theyCode := "320111001010"
+	theyCode := "320111001023"
 	var start = 0
 	list, err := s.GongweiUserInfo(theyCode+"%", start)
 	if err != nil {

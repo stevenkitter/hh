@@ -179,7 +179,7 @@ func (s *Server) PullUserToUS(e, r string) error {
 		return err
 	}
 
-	code := "320111004021"
+	code := "320111004036"
 
 	registeredPermanent, _ := strconv.Atoi(detail.Body.RegisteredPermanent.Key)
 
@@ -280,7 +280,7 @@ func (s *Server) PullUserToUS(e, r string) error {
 	//爸爸
 	diseasetextCheckfq := strings.Split(detail.Body.DiseasetextCheckFq.Text, ",")
 	for _, d := range diseasetextCheckfq {
-		var fatherTag uint32 = 0
+		var fatherTag uint32 = 1
 		var fatherjb string
 		fatherjb = d
 		switch d {
@@ -319,7 +319,7 @@ func (s *Server) PullUserToUS(e, r string) error {
 	familyMonthers := make([]*FamilyDisease, 0)
 	diseasetextCheckmq := strings.Split(detail.Body.DiseasetextCheckMQ.Text, ",")
 	for _, d := range diseasetextCheckmq {
-		var fatherTag uint32 = 0
+		var fatherTag uint32 = 1
 		var motherjb string
 		motherjb = d
 		switch d {
@@ -358,7 +358,7 @@ func (s *Server) PullUserToUS(e, r string) error {
 	familyBrothers := make([]*FamilyDisease, 0)
 	diseasetextCheckXd := strings.Split(detail.Body.DiseasetextCheckXDJM.Text, ",")
 	for _, d := range diseasetextCheckXd {
-		var fatherTag uint32 = 0
+		var fatherTag uint32 = 1
 		var motherjb string
 		motherjb = d
 		switch d {
@@ -397,7 +397,7 @@ func (s *Server) PullUserToUS(e, r string) error {
 	familyChildren := make([]*FamilyDisease, 0)
 	diseasetextCheckZn := strings.Split(detail.Body.DiseasetextCheckZN.Text, ",")
 	for _, d := range diseasetextCheckZn {
-		var fatherTag uint32 = 0
+		var fatherTag uint32 = 1
 		var motherjb string
 		motherjb = d
 		switch d {
@@ -661,7 +661,7 @@ func (s *Server) PullUserToUS(e, r string) error {
 	request, _ := http.NewRequest("POST", url, bytes.NewReader(dd))
 	request.Header.Add("Content-Type", "application/json")
 	request.Header.Add("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:70.0) Gecko/20100101 Firefox/70.0")
-	to := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiIxUVlseEk0cDZDd2xKR2hCM3lWY2lFVGdMNkQiLCJhcmVhQ29kZSI6IjMyMDAwMDAwMDAwMCIsImV4cCI6MTU4Nzg4NTM0MiwiaXNzIjoiZ29uZ3dlaSJ9.s7XYwT0S5qgOFjacrRzS85AZczi0Uuy2bvxjHMWmY1g"
+	to := "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50SWQiOiIxUVlseEk0cDZDd2xKR2hCM3lWY2lFVGdMNkQiLCJhcmVhQ29kZSI6IjMyMDAwMDAwMDAwMCIsImV4cCI6MTU5MjAxNzA1NSwiaXNzIjoiZ29uZ3dlaSJ9.6UqaDVt6o46-0-x7t1XY-KsJAzWHIq5w5eZSDmnOcKM"
 	request.Header.Add("Authorization", to) // 需要录入token
 	resp, err := cli.Do(request)
 	if err != nil {

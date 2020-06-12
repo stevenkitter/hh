@@ -48,6 +48,7 @@ func (s *Server) AddUserHealthInfo(user ChangeHealthCheckRequestBody) {
 	}
 	today := cd[0]
 	item, tag := s.HealthCheckItemContain(res.Body, today)
+	log.Printf("正在导入 %v", userInfo.Body.IdCard)
 	if tag {
 		resDetail, err := s.RequestHealthCheckDetail(item.HealthCheck)
 		if err != nil {

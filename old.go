@@ -558,8 +558,10 @@ func ContentToValue(content string) int {
 		return 2
 	case "有时":
 		return 3
-	case "总是":
+	case "经常":
 		return 4
+	case "总是":
+		return 5
 	}
 	return 0
 }
